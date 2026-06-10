@@ -343,6 +343,52 @@ svg.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;str
   font:600 13.5px/1.3 var(--font-body);display:flex;align-items:center;gap:9px}
 #finale .pt svg.ic{color:var(--blue-hi)}
 @media (max-width:1100px){.statGrid{grid-template-columns:repeat(2,1fr)}}
+/* ============ Mobile ============ */
+#backBtn{display:none}
+@media (max-width:760px){
+  #demoBar{height:34px;font-size:11px;gap:8px;padding:0 10px}
+  #demoBar .co{display:none}
+  #app{inset:34px 0 0 0;flex-direction:column-reverse}
+  #rail{width:100%;height:58px;flex:none;flex-direction:row;justify-content:space-around;align-items:center;
+    border-right:none;border-top:1px solid var(--line);padding:0 6px;gap:0}
+  #rail .mark,#rail .gap,#rail .org,#rail .railBtn .tip{display:none}
+  .railBtn.active::before{left:8px;right:8px;top:-8px;bottom:auto;width:auto;height:3px}
+  .view{min-height:0}
+  #listPane{width:100%;border-right:none}
+  #vConvos.show-thread #listPane{display:none}
+  #threadPane{display:none}
+  #vConvos.show-thread #threadPane{display:flex}
+  #backBtn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;color:var(--fg-2);flex:none;margin-right:-4px}
+  #thHead{padding:10px 14px 0}
+  #thHead .nm{font-size:16px}
+  #thHead .sub{flex-wrap:wrap;gap:6px 12px}
+  #chTabs{gap:14px;overflow-x:auto}
+  #thread{padding:14px 12px 20px}
+  .bub{max-width:85%}
+  .mailCard.out{margin-left:24px}
+  .escCard{padding:14px 16px}
+  #composer{padding:10px 12px 14px}
+  .page{padding:22px 16px}
+  .pgH1{font-size:25px;flex-wrap:wrap;gap:10px}
+  .pgTop{flex-direction:column}
+  .statGrid{grid-template-columns:1fr 1fr;gap:12px}
+  .statCard{padding:16px}
+  .statCard .num{font-size:25px}
+  .statCard .delta{position:static;display:inline-block;margin-top:8px}
+  .callRow{flex-wrap:wrap}
+  .callRow .right{flex-direction:row;align-items:center;width:100%;justify-content:flex-start}
+  #vSettings .wrap{flex-direction:column;min-height:0;overflow-y:auto}
+  #setNav{width:100%;border-right:none;border-bottom:1px solid var(--line);padding:12px;display:flex;gap:4px;overflow-x:auto;flex:none}
+  #setNav .h,.setItem .soon{display:none}
+  .setItem{white-space:nowrap;margin-bottom:0;padding:9px 12px;flex:none}
+  #vSettings .page{max-width:none;overflow-y:visible;flex:none}
+  .chanRow{flex-wrap:wrap;gap:10px}
+  .chanRow .right{margin-left:auto}
+  #tourCard{width:auto;left:12px !important;right:12px;top:auto !important;bottom:70px}
+  #intro .inner,#finale .inner{padding:28px 22px}
+  #intro .btns,#finale .btns{flex-direction:column;align-items:stretch}
+  #finale .pts{flex-direction:column;align-items:stretch}
+}
 </style>
 </head>
 <body>
@@ -402,6 +448,7 @@ svg.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;str
     <div id="threadPane">
       <div id="thHead">
         <div class="top">
+          <button id="backBtn" onclick="document.getElementById('vConvos').classList.remove('show-thread')"><svg class="ic" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
           <div class="avatar" id="thAvatar"></div>
           <div><div class="nm" id="thName"></div>
             <div class="sub">
@@ -784,6 +831,7 @@ function renderList(){
 }
 function selectConv(id){
   currentConv=id; renderList(); renderThread();
+  if(matchMedia("(max-width:760px)").matches) document.getElementById("vConvos").classList.add("show-thread");
 }
 function renderThread(){
   const c = CONVOS.find(x=>x.id===currentConv);
@@ -955,6 +1003,11 @@ function showStep(){
   if(s.view) setView(s.view);
   if(s.conv && currentConv!==s.conv) selectConv(s.conv);
   else if(!s.conv && s.view==="vConvos" && ["call","esc","chtabs","composer"].includes(s.target) && currentConv!=="webb") selectConv("webb");
+  if(matchMedia("(max-width:760px)").matches && s.view==="vConvos"){
+    const vc=document.getElementById("vConvos");
+    if(!s.target || s.target==="list" || s.target==="row0") vc.classList.remove("show-thread");
+    else vc.classList.add("show-thread");
+  }
 
   // expand the call card for the transcript step
   if(s.expand){ const cc=document.querySelector('[data-tour="call"]'); if(cc) cc.classList.add("open"); }
